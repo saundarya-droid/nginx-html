@@ -4,12 +4,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/saundarya-droid/nginx-html.git'
+                // Checkout the repository using the default SCM configuration
+                checkout scm
             }
         }
 
         stage('Deploy') {
             steps {
+                // Deploy index.html to NGINX and restart the service
                 sh '''
                 sudo cp index.html /var/www/html/index.html
                 sudo systemctl restart nginx
@@ -17,4 +19,14 @@ pipeline {
             }
         }
     }
+
+    post {
+        success {
+            echo "Deployment completed successfully!"
+        }
+        failure {
+            echo "Deployment failed. Check the logs."
+        }
+    }
 }
+
